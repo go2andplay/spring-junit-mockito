@@ -3,6 +3,11 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+.DS_Store
+.settings/
+.project
+.classpath
+target/
 # Package Files #
 *.jar
 *.war
