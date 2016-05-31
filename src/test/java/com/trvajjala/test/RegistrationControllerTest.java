@@ -3,8 +3,8 @@ package com.trvajjala.test;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -13,30 +13,44 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.trvajjala.controller.RegistrationController;
 import com.trvajjala.service.RegistrationService;
+import com.trvajjala.service.internal.RegistrationServiceImpl;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = Application.class)
-//@WebAppConfiguration
+/**
+ *
+ * @author ThirupathiReddy V
+ *
+ */
+// @RunWith(SpringJUnit4ClassRunner.class)
+// @ContextConfiguration(classes = Application.class)
+// @WebAppConfiguration
 public class RegistrationControllerTest {
 
     @InjectMocks
     private RegistrationController registrationController;
 
-    @Mock
-    RegistrationService registrationService;
+    @Spy
+    private final RegistrationService registrationService = new RegistrationServiceImpl() {
+        @Override
+        public void save(com.trvajjala.form.Registration registration) {
+            System.err.println("Proving dummy implementation " + registration);
+        };
+    };
+
+    // @Mock
+    // RegistrationService registrationService;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(this.registrationController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(registrationController).build();
     }
 
     @Test
     public void invalidLoginFormTest() throws Exception {
         //@formatter:off
-        this.mockMvc
+        mockMvc
                 .perform(MockMvcRequestBuilders
                         .post("/")
                         .param("username", "trvajjala")
@@ -55,7 +69,7 @@ public class RegistrationControllerTest {
     @Test
     public void validLoginFormTest() throws Exception {
         //@formatter:off
-        this.mockMvc
+        mockMvc
                 .perform(MockMvcRequestBuilders
                         .post("/")
                         .param("username", "trvajjala")
